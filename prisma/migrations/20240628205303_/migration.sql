@@ -7,10 +7,19 @@ CREATE TABLE "Post" (
 );
 
 -- CreateTable
-CREATE TABLE "AiChat" (
+CREATE TABLE "singleMessage" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "Feeback" TEXT,
+    "sentBy" TEXT NOT NULL,
+    "feeback" BOOLEAN,
     "content" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "chatId" INTEGER,
+    CONSTRAINT "singleMessage_chatId_fkey" FOREIGN KEY ("chatId") REFERENCES "Chat" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "Chat" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 

@@ -1,6 +1,6 @@
-import { Message } from "ai";
+import { CoreMessage } from "ai";
 
-const Bubble = ({ message }: { message: Message }) => {
+const Bubble = ({ message }: { message: CoreMessage }) => {
   console.log(message.content);
   return (
     <div
@@ -13,7 +13,9 @@ const Bubble = ({ message }: { message: Message }) => {
           <div className="text-sm font-bold">
             {message.role === "user" ? "User" : "Gemini"}
           </div>
-          <div className="text-base font-light"> {message.content}</div>
+          <div className="text-base font-light">
+            {message.content as string}
+          </div>
           {!(message.role === "user") && (
             <div className="flex w-full flex-row items-center justify-end gap-2">
               <span className="cursor-pointer rounded-md bg-blue-400 p-1 text-white">
