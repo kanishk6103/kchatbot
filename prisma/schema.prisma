@@ -18,3 +18,10 @@ model Post {
 
     @@index([name])
 }
+
+model AiChat {
+    id        Int      @id @default(autoincrement())
+    Feeback   String?
+    content   String
+    createdAt DateTime @default(now())
+}
