@@ -1,7 +1,7 @@
 "use client";
 import { type CoreMessage } from "ai";
-import { useState } from "react";
-import { continueConversation } from "../actions";
+import { useEffect, useState } from "react";
+import { continueConversation, getMessages, createNewChat } from "../actions";
 import { readStreamableValue } from "ai/rsc";
 import { Input } from "@nextui-org/input";
 import { Button } from "@nextui-org/button";
@@ -13,7 +13,26 @@ export const maxDuration = 30;
 export default function Chat() {
   const [messages, setMessages] = useState<CoreMessage[]>([]);
   const [input, setInput] = useState("");
-  // const { messages, input, handleInputChange, handleSubmit } = useChat();
+  const [chatId, setChatId] = useState<number | null>(null);
+
+  useEffect(() => {
+    async function fetchMessages() {
+      let id = chatId;
+      if (!id) {
+        id = await createNewChat();
+        setChatId(id);
+      }
+      const previousMessages = await getMessages(id);
+      setMessages(
+        previousMessages.map((msg) => ({
+          content: msg.content,
+          role: msg.sentBy === "user" ? "user" : "assistant",
+        })),
+      );
+    }
+    fetchMessages();
+  }, [chatId]);
+
   return (
     <div className="mx-auto flex w-full flex-col items-center gap-5 overflow-y-auto px-24 py-24">
       {messages.map((singleMessage: CoreMessage, index) => {
@@ -29,11 +48,11 @@ export default function Chat() {
           ];
           setMessages(newMessages);
           setInput("");
-          const res = await continueConversation(newMessages);
+          const res = await continueConversation(newMessages, chatId);
 
           for await (const content of readStreamableValue(res)) {
-            setMessages([
-              ...newMessages,
+            setMessages((prevMessages) => [
+              ...prevMessages,
               {
                 role: "assistant",
                 content: content as string,
