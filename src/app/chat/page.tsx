@@ -30,7 +30,13 @@ export default function Chat() {
         })),
       );
     }
-    fetchMessages();
+    fetchMessages()
+      .then(() => {
+        console.log("fetched messages");
+      })
+      .catch((e) => {
+        console.error(e);
+      });
   }, []);
 
   useEffect(() => {
@@ -44,9 +50,7 @@ export default function Chat() {
   const handleFeedbackChange = async (id: number, feedback: boolean) => {
     await handleFeedback(feedback, id);
     setMessages((prevMessages) =>
-      prevMessages.map((msg: any) =>
-        msg.id === id ? { ...msg, feedback } : msg,
-      ),
+      prevMessages.map((msg) => (msg.id === id ? { ...msg, feedback } : msg)),
     );
   };
 
@@ -66,27 +70,9 @@ export default function Chat() {
         onSubmit={async (e) => {
           e.preventDefault();
           if (input.trim() === "") return;
-          // append a new message with the role of user with the content from user
-          let lastMessage = null;
-          if (messages.length > 0) {
-            lastMessage = messages[
-              messages.length - 1
-            ] as CoreMessageWithIDandFeedback;
-          }
-          let msg_id = 1;
-          let feedback = null;
-          if (lastMessage) {
-            msg_id = lastMessage.id;
-            feedback = lastMessage.feedback;
-          }
           const newMessages: CoreMessage[] | CoreMessageWithIDandFeedback[] = [
             ...messages,
-            {
-              id: msg_id,
-              content: input.trim(),
-              role: "user",
-              feedback: null,
-            } as any,
+            { content: input.trim(), role: "user" },
           ];
           setMessages(newMessages);
           setInput("");
@@ -95,11 +81,9 @@ export default function Chat() {
             setMessages([
               ...newMessages,
               {
-                id: msg_id + 2 ?? 2,
                 role: "assistant",
                 content: content as string,
-                feedback: null,
-              } as any,
+              },
             ]);
           }
           console.log("messages here: ", messages);
