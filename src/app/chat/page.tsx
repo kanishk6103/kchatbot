@@ -73,19 +73,20 @@ export default function Chat() {
               messages.length - 1
             ] as CoreMessageWithIDandFeedback;
           }
-          let id = 1;
+          let msg_id = 1;
           let feedback = null;
           if (lastMessage) {
-            id = lastMessage.id;
+            msg_id = lastMessage.id;
             feedback = lastMessage.feedback;
           }
           const newMessages: CoreMessage[] | CoreMessageWithIDandFeedback[] = [
             ...messages,
             {
-              id: id,
+              id: msg_id,
               content: input.trim(),
               role: "user",
-            },
+              feedback: null,
+            } as any,
           ];
           setMessages(newMessages);
           setInput("");
@@ -94,10 +95,11 @@ export default function Chat() {
             setMessages([
               ...newMessages,
               {
-                id: id + 2 ?? 2,
+                id: msg_id + 2 ?? 2,
                 role: "assistant",
                 content: content as string,
-              },
+                feedback: null,
+              } as any,
             ]);
           }
           console.log("messages here: ", messages);
