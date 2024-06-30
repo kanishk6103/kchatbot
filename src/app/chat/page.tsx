@@ -67,9 +67,25 @@ export default function Chat() {
           e.preventDefault();
           if (input.trim() === "") return;
           // append a new message with the role of user with the content from user
-          const newMessages: CoreMessage[] = [
+          let lastMessage = null;
+          if (messages.length > 0) {
+            lastMessage = messages[
+              messages.length - 1
+            ] as CoreMessageWithIDandFeedback;
+          }
+          let id = 1;
+          let feedback = null;
+          if (lastMessage) {
+            id = lastMessage.id;
+            feedback = lastMessage.feedback;
+          }
+          const newMessages: CoreMessage[] | CoreMessageWithIDandFeedback[] = [
             ...messages,
-            { content: input.trim(), role: "user" },
+            {
+              id: id,
+              content: input.trim(),
+              role: "user",
+            },
           ];
           setMessages(newMessages);
           setInput("");
@@ -78,6 +94,7 @@ export default function Chat() {
             setMessages([
               ...newMessages,
               {
+                id: id + 2 ?? 2,
                 role: "assistant",
                 content: content as string,
               },
