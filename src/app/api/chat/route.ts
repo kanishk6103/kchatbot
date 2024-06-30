@@ -1,17 +1,17 @@
-import { google } from "@ai-sdk/google";
-import { streamText } from "ai";
+// import { google } from "@ai-sdk/google";
+// import { streamText } from "ai";
 
-export const maxDuration = 30;
+// export const maxDuration = 30;
 
-export async function POST(req: Request) {
-  const { messages } = await req.json();
-  const result = await streamText({
-    model: google("models/gemini-pro"),
-    messages,
-  });
+// export async function POST(req: Request) {
+//   const { messages } = await req.json();
+//   const result = await streamText({
+//     model: google("models/gemini-pro"),
+//     messages,
+//   });
 
-  return result.toAIStreamResponse();
-}
+//   return result.toAIStreamResponse();
+// }
 
 // async onFinish({ text, toolCalls, toolResults, usage, finishReason }) {
 //   // console.log(text);
