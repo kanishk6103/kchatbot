@@ -13,7 +13,7 @@ const Bubble = ({
   message: CoreMessageWithIDandFeedback;
   onFeedbackChange: (id: number, feedback: boolean) => void;
 }) => {
-  console.log(message.content);
+  console.log(message);
 
   const handleLike = () => {
     // this will call the db function to set feedback, the function will be provided the feedback and ID

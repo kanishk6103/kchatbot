@@ -57,6 +57,7 @@ export async function getMessages() {
 
 export async function handleFeedback(feedback: boolean, id: number) {
   // if it is a like
+  console.log(feedback, id);
   if (feedback) {
     await db.singleMessage.update({
       where: {

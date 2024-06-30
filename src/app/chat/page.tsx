@@ -18,7 +18,6 @@ export default function Chat() {
   >([]);
   const [input, setInput] = useState<string>("");
   // const { messages, input, handleInputChange, handleSubmit } = useChat();
-
   useEffect(() => {
     async function fetchMessages() {
       const previousMessages = await getMessages();
@@ -45,7 +44,9 @@ export default function Chat() {
   const handleFeedbackChange = async (id: number, feedback: boolean) => {
     await handleFeedback(feedback, id);
     setMessages((prevMessages) =>
-      prevMessages.map((msg) => (msg.id === id ? { ...msg, feedback } : msg)),
+      prevMessages.map((msg: any) =>
+        msg.id === id ? { ...msg, feedback } : msg,
+      ),
     );
   };
 
@@ -82,7 +83,7 @@ export default function Chat() {
               },
             ]);
           }
-          console.log(messages);
+          console.log("messages here: ", messages);
         }}
         className="fixed bottom-0 mb-8 flex w-full max-w-2xl items-center gap-2 rounded-xl bg-white"
       >
