@@ -5,7 +5,9 @@ import { continueConversation, getMessages, handleFeedback } from "../actions";
 import { readStreamableValue } from "ai/rsc";
 import { Input } from "@nextui-org/input";
 import { Button } from "@nextui-org/button";
-import Bubble, { CoreMessageWithIDandFeedback } from "../components/Bubble";
+import Bubble, {
+  type CoreMessageWithIDandFeedback,
+} from "../components/Bubble";
 import { useRef } from "react";
 
 export const dynamic = "force-dynamic";
@@ -13,9 +15,7 @@ export const maxDuration = 30;
 
 export default function Chat() {
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
-  const [messages, setMessages] = useState<
-    CoreMessage[] | CoreMessageWithIDandFeedback[]
-  >([]);
+  const [messages, setMessages] = useState<CoreMessageWithIDandFeedback[]>([]);
   const [input, setInput] = useState<string>("");
   // const { messages, input, handleInputChange, handleSubmit } = useChat();
   useEffect(() => {
@@ -32,7 +32,7 @@ export default function Chat() {
     }
     fetchMessages()
       .then(() => {
-        console.log("fetched messages");
+        console.log("fetched");
       })
       .catch((e) => {
         console.error(e);
@@ -70,9 +70,23 @@ export default function Chat() {
         onSubmit={async (e) => {
           e.preventDefault();
           if (input.trim() === "") return;
-          const newMessages: CoreMessage[] | CoreMessageWithIDandFeedback[] = [
+          // append a new message with the role of user with the content from user
+          let lastMessage = null;
+          if (messages.length > 0) {
+            lastMessage = messages[messages.length - 1];
+          }
+          let msg_id = 1;
+          if (lastMessage) {
+            msg_id = lastMessage.id;
+          }
+          const newMessages: CoreMessageWithIDandFeedback[] = [
             ...messages,
-            { content: input.trim(), role: "user" },
+            {
+              id: msg_id,
+              content: input.trim(),
+              role: "user",
+              feedback: null,
+            },
           ];
           setMessages(newMessages);
           setInput("");
@@ -81,8 +95,10 @@ export default function Chat() {
             setMessages([
               ...newMessages,
               {
+                id: msg_id + 2 ?? 2,
                 role: "assistant",
-                content: content as string,
+                content: content!,
+                feedback: null,
               },
             ]);
           }
