@@ -9,6 +9,7 @@ import Bubble, {
   type CoreMessageWithIDandFeedback,
 } from "../components/Bubble";
 import { useRef } from "react";
+// import { Textarea } from "@nextui-org/react";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 30;

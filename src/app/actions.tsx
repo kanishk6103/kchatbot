@@ -5,7 +5,7 @@ import { google } from "@ai-sdk/google";
 import { db } from "@/server/db";
 
 export async function continueConversation(messages: CoreMessage[]) {
-  console.log(messages);
+  // console.log(messages);
 
   // await db.chat.create({
   //   data: {
