@@ -1,5 +1,5 @@
 import Markdown from "markdown-to-jsx";
-
+import { Avatar } from "@nextui-org/avatar";
 export type CoreMessageWithIDandFeedback = {
   id: number;
   role: "user" | "assistant";
@@ -24,52 +24,59 @@ const Bubble = ({
     onFeedbackChange(message.id, false);
   };
 
+  const bot_src = "https://avatars.githubusercontent.com/u/138905633?v=4";
+  const user_src = "https://avatars.githubusercontent.com/u/72643990?v=4";
+
   return (
     <div
       className={`relative flex w-full flex-col ${message.role === "user" ? "items-end" : "items-start"}`}
     >
-      <div
-        className={`max-w-2xl rounded-xl ${message.role === "user" ? "bg-blue-100" : "bg-gray-100"} w-max px-4 py-3`}
-      >
-        <div className="flex flex-col gap-1 whitespace-pre-wrap">
-          <div className="text-sm font-bold">
-            {message.role === "user" ? "User" : "Gemini"}
-          </div>
-          <div className="text-base font-light">
-            <Markdown>{message.content}</Markdown>
-          </div>
-          {!(message.role === "user") && (
-            <div className="mt-3 flex w-full flex-row items-center justify-end gap-2 text-xs">
-              {message.feedback === true ? (
-                <span className={"rounded-md bg-blue-400 p-1 text-white "}>
-                  Liked
-                </span>
-              ) : message.feedback === false ? (
-                //dislike
-                <span className={"rounded-md bg-red-400 p-1 text-white "}>
-                  Disliked
-                </span>
-              ) : (
-                <>
-                  <span
-                    className={
-                      "cursor-pointer rounded-md bg-blue-400 p-1 text-white "
-                    }
-                    onClick={handleLike}
-                  >
-                    {message.feedback ? "Liked" : "Like"}
-                  </span>
-                  <span
-                    className="cursor-pointer rounded-md bg-red-400 p-1 text-white"
-                    onClick={handleDislike}
-                  >
-                    {message.feedback === false ? "Disliked" : "Dislike"}
-                  </span>
-                </>
-              )}
+      <div className="flex gap-2">
+        {!(message.role === "user") && <Avatar src={bot_src} size="md" />}
+        <div
+          className={`max-w-2xl rounded-xl ${message.role === "user" ? "bg-blue-100" : "bg-gray-100"} w-max px-4 py-3`}
+        >
+          <div className="flex flex-col gap-1 whitespace-pre-wrap">
+            <div className="text-sm font-bold">
+              {message.role === "user" ? "User" : "Gemini"}
             </div>
-          )}
+            <div className="text-base font-light">
+              <Markdown>{message.content}</Markdown>
+            </div>
+            {!(message.role === "user") && (
+              <div className="mt-3 flex w-full flex-row items-center justify-end gap-2 text-xs">
+                {message.feedback === true ? (
+                  <span className={"rounded-md bg-blue-400 p-1 text-white "}>
+                    Liked
+                  </span>
+                ) : message.feedback === false ? (
+                  //dislike
+                  <span className={"rounded-md bg-red-400 p-1 text-white "}>
+                    Disliked
+                  </span>
+                ) : (
+                  <>
+                    <span
+                      className={
+                        "cursor-pointer rounded-md bg-blue-400 p-1 text-white "
+                      }
+                      onClick={handleLike}
+                    >
+                      {message.feedback ? "Liked" : "Like"}
+                    </span>
+                    <span
+                      className="cursor-pointer rounded-md bg-red-400 p-1 text-white"
+                      onClick={handleDislike}
+                    >
+                      {message.feedback === false ? "Disliked" : "Dislike"}
+                    </span>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
         </div>
+        {message.role === "user" && <Avatar src={user_src} size="md" />}
       </div>
     </div>
   );
