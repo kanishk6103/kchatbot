@@ -5,7 +5,9 @@ import { continueConversation, getMessages, handleFeedback } from "../actions";
 import { readStreamableValue } from "ai/rsc";
 import { Input } from "@nextui-org/input";
 import { Button } from "@nextui-org/button";
-import Bubble, { CoreMessageWithIDandFeedback } from "../components/Bubble";
+import Bubble, {
+  type CoreMessageWithIDandFeedback,
+} from "../components/Bubble";
 import { useRef } from "react";
 
 export const dynamic = "force-dynamic";
@@ -13,9 +15,7 @@ export const maxDuration = 30;
 
 export default function Chat() {
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
-  const [messages, setMessages] = useState<
-    CoreMessage[] | CoreMessageWithIDandFeedback[]
-  >([]);
+  const [messages, setMessages] = useState<CoreMessageWithIDandFeedback[]>([]);
   const [input, setInput] = useState<string>("");
   // const { messages, input, handleInputChange, handleSubmit } = useChat();
   useEffect(() => {
@@ -30,7 +30,13 @@ export default function Chat() {
         })),
       );
     }
-    fetchMessages();
+    fetchMessages()
+      .then(() => {
+        console.log("fetched");
+      })
+      .catch((e) => {
+        console.error(e);
+      });
   }, []);
 
   useEffect(() => {
@@ -44,9 +50,7 @@ export default function Chat() {
   const handleFeedbackChange = async (id: number, feedback: boolean) => {
     await handleFeedback(feedback, id);
     setMessages((prevMessages) =>
-      prevMessages.map((msg: any) =>
-        msg.id === id ? { ...msg, feedback } : msg,
-      ),
+      prevMessages.map((msg) => (msg.id === id ? { ...msg, feedback } : msg)),
     );
   };
 
@@ -69,24 +73,20 @@ export default function Chat() {
           // append a new message with the role of user with the content from user
           let lastMessage = null;
           if (messages.length > 0) {
-            lastMessage = messages[
-              messages.length - 1
-            ] as CoreMessageWithIDandFeedback;
+            lastMessage = messages[messages.length - 1];
           }
           let msg_id = 1;
-          let feedback = null;
           if (lastMessage) {
             msg_id = lastMessage.id;
-            feedback = lastMessage.feedback;
           }
-          const newMessages: CoreMessage[] | CoreMessageWithIDandFeedback[] = [
+          const newMessages: CoreMessageWithIDandFeedback[] = [
             ...messages,
             {
               id: msg_id,
               content: input.trim(),
               role: "user",
               feedback: null,
-            } as any,
+            },
           ];
           setMessages(newMessages);
           setInput("");
@@ -97,9 +97,9 @@ export default function Chat() {
               {
                 id: msg_id + 2 ?? 2,
                 role: "assistant",
-                content: content as string,
+                content: content!,
                 feedback: null,
-              } as any,
+              },
             ]);
           }
           console.log("messages here: ", messages);

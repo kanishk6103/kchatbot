@@ -1,9 +1,10 @@
-import { CoreMessage } from "ai";
-import { handleFeedback } from "../actions";
 import Markdown from "markdown-to-jsx";
-export type CoreMessageWithIDandFeedback = CoreMessage & {
+
+export type CoreMessageWithIDandFeedback = {
   id: number;
-  feedback: boolean;
+  role: "user" | "assistant";
+  content: string;
+  feedback: boolean | null;
 };
 
 const Bubble = ({
@@ -35,7 +36,7 @@ const Bubble = ({
             {message.role === "user" ? "User" : "Gemini"}
           </div>
           <div className="text-base font-light">
-            <Markdown>{message.content as string}</Markdown>
+            <Markdown>{message.content}</Markdown>
           </div>
           {!(message.role === "user") && (
             <div className="mt-3 flex w-full flex-row items-center justify-end gap-2 text-xs">
