@@ -1,7 +1,7 @@
 import "@/styles/globals.css";
 import { GeistSans } from "geist/font/sans";
 import { Providers } from "./providers";
-
+import NavbarComponent from "./components/Navbar";
 export const metadata = {
   title: "K-Chatbot",
   description: "A simple ai chatbot you can talk to",
@@ -16,6 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <body>
+        <NavbarComponent />
         <Providers>{children}</Providers>
       </body>
     </html>

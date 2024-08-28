@@ -51,7 +51,7 @@ export async function getMessages() {
     where: {},
     orderBy: { createdAt: "asc" },
   });
-  console.log("messages are here: ", messages);
+  // console.log("messages are here: ", messages);
   return messages;
 }
 
