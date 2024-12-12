@@ -1,6 +1,7 @@
 "use client";
+
 import { type CoreMessage } from "ai";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { continueConversation, getMessages, handleFeedback } from "../actions";
 import { readStreamableValue } from "ai/rsc";
 import { Input } from "@nextui-org/input";
@@ -8,8 +9,7 @@ import { Button } from "@nextui-org/button";
 import Bubble, {
   type CoreMessageWithIDandFeedback,
 } from "../components/Bubble";
-import { useRef } from "react";
-// import { Textarea } from "@nextui-org/react";
+import { useSession } from "next-auth/react";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 30;
@@ -18,7 +18,9 @@ export default function Chat() {
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
   const [messages, setMessages] = useState<CoreMessageWithIDandFeedback[]>([]);
   const [input, setInput] = useState<string>("");
-  // const { messages, input, handleInputChange, handleSubmit } = useChat();
+
+  const { data: session, status } = useSession();
+
   useEffect(() => {
     async function fetchMessages() {
       const previousMessages = await getMessages();
@@ -33,7 +35,7 @@ export default function Chat() {
     }
     fetchMessages()
       .then(() => {
-        console.log("fetched");
+        console.log("Messages fetched successfully.");
       })
       .catch((e) => {
         console.error(e);
@@ -55,6 +57,14 @@ export default function Chat() {
     );
   };
 
+  if (status === "loading") {
+    return <div>Loading...</div>;
+  }
+
+  if (!session) {
+    return <div>Please sign in to access the chat.</div>;
+  }
+
   return (
     <div className="mx-auto flex w-full flex-col items-center gap-5 overflow-y-auto px-24 py-24">
       {messages.map((singleMessage: CoreMessage, index) => {
@@ -71,7 +81,7 @@ export default function Chat() {
         onSubmit={async (e) => {
           e.preventDefault();
           if (input.trim() === "") return;
-          // append a new message with the role of user with the content from user
+          // Append a new message with the role of user with the content from user
           let lastMessage = null;
           if (messages.length > 0) {
             lastMessage = messages[messages.length - 1];
@@ -96,7 +106,7 @@ export default function Chat() {
             setMessages([
               ...newMessages,
               {
-                id: msg_id + 2 ?? 2,
+                id: msg_id ? msg_id + 2 : 2,
                 role: "assistant",
                 content: content!,
                 feedback: null,
